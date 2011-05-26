@@ -61,7 +61,7 @@ class qbehaviour_opaque extends question_behaviour {
         }
     }
 
-    public function init_first_step(question_attempt_step $step) {
+    public function init_first_step(question_attempt_step $step, $variant) {
         global $USER;
 
         // Set up the random seed to be the current time in milliseconds.
