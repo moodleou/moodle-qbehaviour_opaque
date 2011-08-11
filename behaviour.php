@@ -136,7 +136,7 @@ class qbehaviour_opaque extends question_behaviour {
         // Try to get the question to stop.
         $result = $this->process_remote_action($pendingstep);
 
-        if ($result == question_attempt::KEEP && !$this->qa->get_state()->is_finished()) {
+        if ($result == question_attempt::KEEP && !$pendingstep->get_state()->is_finished()) {
             // They tried to finish but the question is not finished, so all we
             // can do is to set the state to gave up. This lets the renderer
             // handle the review page appropriately.
