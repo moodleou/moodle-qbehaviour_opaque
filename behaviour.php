@@ -77,6 +77,15 @@ class qbehaviour_opaque extends question_behaviour {
         $this->questionsummary = html_to_text($opaquestate->xhtml, 0, false);
     }
 
+    public function adjust_display_options(question_display_options $options) {
+        if (!$this->qa->has_marks()) {
+            $options->correctness = false;
+        }
+        if ($this->qa->get_state()->is_finished()) {
+            $options->readonly = true;
+        }
+    }
+
     public function get_question_summary() {
         return $this->questionsummary;
     }

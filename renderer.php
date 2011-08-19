@@ -42,7 +42,7 @@ class qbehaviour_opaque_renderer extends qbehaviour_renderer {
         }
 
         try {
-            $opaquestate = qtype_opaque_update_state($qa);
+            $opaquestate = qtype_opaque_update_state($qa, null, $options);
         } catch (SoapFault $sf) {
             return html_writer::tag('div', get_string('errorconnecting', 'qtype_opaque') .
                     html_writer::tag('pre', get_string('soapfault', 'qtype_opaque', $sf),
