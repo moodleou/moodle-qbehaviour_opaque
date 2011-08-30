@@ -44,14 +44,21 @@ class qbehaviour_opaque_renderer extends qbehaviour_renderer {
         try {
             $opaquestate = qtype_opaque_update_state($qa, null, $options);
         } catch (SoapFault $sf) {
-            return html_writer::tag('div', get_string('errorconnecting', 'qtype_opaque') .
-                    html_writer::tag('pre', get_string('soapfault', 'qtype_opaque', $sf),
-                            array('class' => 'notifytiny')),
-                    array('class' => 'opaqueerror'));
+            return $this->soap_fault($sf);
         }
 
         return html_writer::tag('div', $opaquestate->xhtml,
                 array('class' => qtype_opaque_browser_type()));
+    }
+
+    protected function soap_fault(SoapFault $sf) {
+        $a = new stdClass();
+        $a->faultcode = $sf->faultcode;
+        $a->faultstring = $sf->getMessage();
+        return html_writer::tag('div', get_string('errorconnecting', 'qtype_opaque') .
+                html_writer::tag('pre', get_string('soapfault', 'qtype_opaque', $a),
+                        array('class' => 'notifytiny')),
+                array('class' => 'opaqueerror'));
     }
 
     public function head_code(question_attempt $qa) {
