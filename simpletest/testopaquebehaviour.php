@@ -75,7 +75,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_mark(null);
         $this->check_current_output(
                 new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/You have 3 attempts/'),
+                new PatternExpectation('/You have 3 tries/'),
                 $this->get_contains_button_expectation(
                         $qa->get_qt_field_name('omact_gen_14'), 'Check'));
         $this->assertPattern('/^\s*Below is a plan of a proposed garden./',
@@ -104,7 +104,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$todo);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/You have 2 attempts/'));
+                new PatternExpectation('/You have 2 tries/'));
 
         // Submit a wrong answer again.
         $this->process_submission(array('omval_response1' => 1, 'omval_response2' => 666,
@@ -126,7 +126,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$todo);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/This is your last attempt/'));
+                new PatternExpectation('/This is your last try/'));
 
         // Submit a wrong answer third time.
         $this->process_submission(array('omval_response1' => 1, 'omval_response2' => 666,
@@ -172,7 +172,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_mark(null);
         $this->check_current_output(
                 new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/You have 3 attempts/'),
+                new PatternExpectation('/You have 3 tries/'),
                 $this->get_contains_button_expectation(
                         $qa->get_qt_field_name('omact_gen_14'), 'Check'));
 
@@ -213,7 +213,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_mark(null);
         $this->check_current_output(
                 new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/You have 3 attempts/'),
+                new PatternExpectation('/You have 3 tries/'),
                 $this->get_contains_button_expectation(
                         $qa->get_qt_field_name('omact_gen_14'), 'Check'));
 
