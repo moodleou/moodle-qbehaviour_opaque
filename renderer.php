@@ -47,7 +47,20 @@ class qbehaviour_opaque_renderer extends qbehaviour_renderer {
             return $this->soap_fault($sf);
         }
 
-        return html_writer::tag('div', $opaquestate->xhtml,
+        $question = $qa->get_question();
+        $resourcecache = new qtype_opaque_resource_cache($question->engineid,
+        $question->remoteid, $question->remoteversion);
+
+        if (!empty($opaquestate->cssfilename) &&
+                $resourcecache->file_in_cache($opaquestate->cssfilename)) {
+            $javascript = html_writer::script('
+                    YUI.use("node", function(Y) {
+                        Y.one("head").append(Y.Node.create(\'<link type="text/css" rel="stylesheet" href="' .
+                                $resourcecache->file_url($opaquestate->cssfilename) . '" />\'));
+                    })');
+        }
+
+        return html_writer::tag('div', $javascript . $opaquestate->xhtml,
                 array('class' => qtype_opaque_browser_type()));
     }
 
@@ -59,26 +72,5 @@ class qbehaviour_opaque_renderer extends qbehaviour_renderer {
                 html_writer::tag('pre', get_string('soapfault', 'qtype_opaque', $a),
                         array('class' => 'notifytiny')),
                 array('class' => 'opaqueerror'));
-    }
-
-    public function head_code(question_attempt $qa) {
-        $output = '';
-        try {
-            $opaquestate = qtype_opaque_update_state($qa);
-        } catch (SoapFault $sf) {
-            // Errors are reported properly elsewhere.
-            return '';
-        }
-
-        $question = $qa->get_question();
-        $resourcecache = new qtype_opaque_resource_cache($question->engineid,
-                $question->remoteid, $question->remoteversion);
-
-        if (!empty($opaquestate->cssfilename) &&
-                $resourcecache->file_in_cache($opaquestate->cssfilename)) {
-            $this->page->requires->css($resourcecache->file_url($opaquestate->cssfilename));
-        }
-
-        return $output;
     }
 }
