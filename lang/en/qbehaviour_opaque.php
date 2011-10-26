@@ -23,5 +23,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['errorconnecting'] = 'Error connecting to the remote question engine.';
+$string['lTRYAGAIN'] = 'Try again';
+$string['lGIVEUP'] = 'Pass';
+$string['lNEXTQUESTION'] = 'Next';
+$string['lENTERANSWER'] = 'Check';
+$string['lCLEAR'] = 'Clear';
 $string['notcomplete'] = 'Not complete';
+$string['notcompletedmessage'] = 'You did not complete this question during the attempt. No review is possible.';
 $string['pluginname'] = 'Question managed by a remote engine';
+$string['soapfault'] = 'Technical details:
+Fault code: {$a->faultcode}
+Fault string: {$a->faultstring}';

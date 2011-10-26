@@ -26,10 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'qbehaviour_opaque';
-$plugin->version      = 2011092601;
+$plugin->version      = 2011102500;
 $plugin->maturity     = MATURITY_BETA;
 
 $plugin->requires     = 2011051212;
 $plugin->dependencies = array(
-    'qtype_opaque'    => 2011092600
+    'qtype_opaque'    => 2011102500
 );

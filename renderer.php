@@ -35,41 +35,42 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qbehaviour_opaque_renderer extends qbehaviour_renderer {
+
     public function controls(question_attempt $qa, question_display_options $options) {
         if ($qa->get_state()->is_gave_up()) {
-            return html_writer::tag('div', get_string('notcompletedmessage', 'qtype_opaque'),
+            return html_writer::tag('div', get_string('notcompletedmessage', 'qbehaviour_opaque'),
                     array('class' => 'question_aborted'));
         }
 
         try {
-            $opaquestate = qtype_opaque_update_state($qa, null, $options);
+            $opaquestate = new qbehaviour_opaque_state($qa, null, $options);
         } catch (SoapFault $sf) {
             return $this->soap_fault($sf);
         }
 
         $question = $qa->get_question();
-        $resourcecache = new qtype_opaque_resource_cache($question->engineid,
-        $question->remoteid, $question->remoteversion);
+        $resourcecache = new qbehaviour_opaque_resource_cache($question->engineid,
+                $question->remoteid, $question->remoteversion);
 
-        if (!empty($opaquestate->cssfilename) &&
-                $resourcecache->file_in_cache($opaquestate->cssfilename)) {
+        if ($opaquestate->get_css_filename() &&
+                $resourcecache->file_in_cache($opaquestate->get_css_filename())) {
             $javascript = html_writer::script('
-                    YUI.use("node", function(Y) {
+                    YUI().use("node", function(Y) {
                         Y.one("head").append(Y.Node.create(\'<link type="text/css" rel="stylesheet" href="' .
-                                $resourcecache->file_url($opaquestate->cssfilename) . '" />\'));
+                                $resourcecache->file_url($opaquestate->get_css_filename()) . '" />\'));
                     })');
         }
 
-        return html_writer::tag('div', $javascript . $opaquestate->xhtml,
-                array('class' => qtype_opaque_browser_type()));
+        return html_writer::tag('div', $javascript . $opaquestate->get_xhtml(),
+                array('class' => qbehaviour_opaque_legacy_browser_type()));
     }
 
     protected function soap_fault(SoapFault $sf) {
         $a = new stdClass();
         $a->faultcode = $sf->faultcode;
         $a->faultstring = $sf->getMessage();
-        return html_writer::tag('div', get_string('errorconnecting', 'qtype_opaque') .
-                html_writer::tag('pre', get_string('soapfault', 'qtype_opaque', $a),
+        return html_writer::tag('div', get_string('errorconnecting', 'qbehaviour_opaque') .
+                html_writer::tag('pre', get_string('soapfault', 'qbehaviour_opaque', $a),
                         array('class' => 'notifytiny')),
                 array('class' => 'opaqueerror'));
     }

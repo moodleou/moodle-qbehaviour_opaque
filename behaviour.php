@@ -27,6 +27,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/question/type/opaque/connection.php');
+require_once($CFG->dirroot . '/question/behaviour/opaque/connection.php');
+require_once($CFG->dirroot . '/question/behaviour/opaque/statecache.php');
+require_once($CFG->dirroot . '/question/behaviour/opaque/resourcecache.php');
+require_once($CFG->dirroot . '/question/behaviour/opaque/legacy.php');
+require_once($CFG->dirroot . '/question/behaviour/opaque/opaquestate.php');
+
 
 /**
  * This behaviour is specifically for use with the Opaque question type.
@@ -52,10 +59,13 @@ class qbehaviour_opaque extends question_behaviour {
     public function get_state_string($showcorrectness) {
         $state = $this->qa->get_state();
         $omstate = $this->qa->get_last_behaviour_var('_statestring');
+
         if ($state->is_finished()) {
             return $state->default_string($showcorrectness);
+
         } else if ($omstate) {
             return $omstate;
+
         } else {
             return get_string('notcomplete', 'qbehaviour_opaque');
         }
@@ -70,11 +80,12 @@ class qbehaviour_opaque extends question_behaviour {
         $step->set_behaviour_var('_userid', $USER->id);
         $step->set_behaviour_var('_language', current_language());
         $step->set_behaviour_var('_preferredbehaviour', $this->preferredbehaviour);
-        $opaquestate = qtype_opaque_update_state($this->qa, $step);
-        $step->set_behaviour_var('_statestring', $opaquestate->progressinfo);
+
+        $opaquestate = new qbehaviour_opaque_state($this->qa, $step);
+        $step->set_behaviour_var('_statestring', $opaquestate->get_progress_info());
 
         // Remember the question summary.
-        $this->questionsummary = html_to_text($opaquestate->xhtml, 0, false);
+        $this->questionsummary = html_to_text($opaquestate->get_xhtml(), 0, false);
     }
 
     public function adjust_display_options(question_display_options $options) {
@@ -93,11 +104,9 @@ class qbehaviour_opaque extends question_behaviour {
     protected function is_same_response(question_attempt_step $pendingstep) {
         $newdata = $pendingstep->get_submitted_data();
 
-        foreach ($newdata as $key => $ignored) {
-            // If an omact_ button has been clicked, never treat this as a duplicate submission.
-            if (strpos($key, 'omact_') === 0) {
-                return false;
-            }
+        // If an omact_ button has been clicked, never treat this as a duplicate submission.
+        if (qbehaviour_opaque_response_contains_om_action($newdata)) {
+            return false;
         }
 
         $olddata = $this->qa->get_last_step()->get_submitted_data();
@@ -105,12 +114,15 @@ class qbehaviour_opaque extends question_behaviour {
     }
 
     public function summarise_action(question_attempt_step $step) {
+
         if ($step->has_behaviour_var('finish')) {
             return $this->summarise_finish($step);
+
         } else if ($step->has_behaviour_var('comment')) {
             return $this->summarise_manual_comment($step);
+
         } else {
-            $data = qtype_opaque_get_submitted_data($step);
+            $data = qbehaviour_opaque_state::submitted_data($step);
             $formatteddata = array();
             foreach ($data as $name => $value) {
                 $formatteddata[] = $name . ' => ' . s($value);
@@ -126,12 +138,14 @@ class qbehaviour_opaque extends question_behaviour {
     public function process_action(question_attempt_pending_step $pendingstep) {
         if ($pendingstep->has_behaviour_var('finish')) {
             return $this->process_finish($pendingstep);
-        }
-        if ($pendingstep->has_behaviour_var('comment')) {
+
+        } else if ($pendingstep->has_behaviour_var('comment')) {
             return $this->process_comment($pendingstep);
+
         } else if ($this->is_same_response($pendingstep) ||
                 $this->qa->get_state()->is_finished()) {
             return question_attempt::DISCARD;
+
         } else {
             return $this->process_remote_action($pendingstep);
         }
@@ -155,44 +169,40 @@ class qbehaviour_opaque extends question_behaviour {
     }
 
     public function process_remote_action(question_attempt_pending_step $pendingstep) {
-        try {
-            $opaquestate = qtype_opaque_update_state($this->qa, $pendingstep);
-        } catch (SoapFault $sf) {
-            print_object($sf);
-            return question_attempt::DISCARD; // TODO better Opaque error handling.
-        }
+        $opaquestate = new qbehaviour_opaque_state($this->qa, $pendingstep);
 
-        if ($opaquestate->resultssequencenumber != $this->qa->get_num_steps()) {
+        if ($opaquestate->get_results_sequence_number() != $this->qa->get_num_steps()) {
             $pendingstep->set_state(question_state::$todo);
-            $pendingstep->set_behaviour_var('_statestring', $opaquestate->progressinfo);
+            $pendingstep->set_behaviour_var('_statestring', $opaquestate->get_progress_info());
 
         } else {
             // Look for a score on the default axis.
             $pendingstep->set_fraction(0);
-            foreach ($opaquestate->results->scores as $score) {
+            $results = $opaquestate->get_results();
+            foreach ($results->scores as $score) {
                 if ($score->axis == '') {
                     $pendingstep->set_fraction($score->marks / $this->question->defaultmark);
                 }
             }
 
-            if ($opaquestate->results->attempts > 0) {
+            if ($results->attempts > 0) {
                 $pendingstep->set_state(question_state::$gradedright);
             } else {
                 $pendingstep->set_state(
                         question_state::graded_state_for_fraction($pendingstep->get_fraction()));
             }
 
-            if (!empty($opaquestate->results->questionLine)) {
+            if (!empty($results->questionLine)) {
                 $this->qa->set_question_summary(
-                        $this->cleanup_results($opaquestate->results->questionLine));
+                        $this->cleanup_results($results->questionLine));
             }
-            if (!empty($opaquestate->results->answerLine)) {
+            if (!empty($results->answerLine)) {
                 $pendingstep->set_new_response_summary(
-                        $this->cleanup_results($opaquestate->results->answerLine));
+                        $this->cleanup_results($results->answerLine));
             }
-            if (!empty($opaquestate->results->actionSummary)) {
+            if (!empty($results->actionSummary)) {
                 $pendingstep->set_behaviour_var('_actionsummary',
-                        $this->cleanup_results($opaquestate->results->actionSummary));
+                        $this->cleanup_results($results->actionSummary));
             }
         }
 

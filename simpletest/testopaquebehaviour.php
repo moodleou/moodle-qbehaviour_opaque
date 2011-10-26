@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(dirname(__FILE__) . '/../../../engine/lib.php');
-require_once(dirname(__FILE__) . '/../../../engine/simpletest/helpers.php');
-require_once(dirname(__FILE__) . '/../behaviour.php');
+require_once($CFG->dirroot . '/question/engine/lib.php');
+require_once($CFG->dirroot . '/question/engine/simpletest/helpers.php');
+require_once($CFG->dirroot . '/question/behaviour/opaque/behaviour.php');
 
 
 /**
@@ -45,8 +45,10 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
      */
     protected function make_standard_om_question() {
         global $DB;
-        $engineid = $DB->get_field('question_opaque_engines', 'MIN(id)', array());
-        if (empty($engineid)) {
+
+        $engines = qtype_opaque_engine_manager::get()->choices();
+        $engineid = key($engines);
+        if (!$engineid) {
             throw new coding_exception('Cannot test Opaque. No question engines configured.');
         }
 
@@ -239,6 +241,6 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_mark(null);
         $this->check_current_output(
                 new PatternExpectation('/' .
-                        preg_quote(get_string('notcompletedmessage', 'qtype_opaque')) . '/'));
+                        preg_quote(get_string('notcompletedmessage', 'qbehaviour_opaque')) . '/'));
     }
 }
