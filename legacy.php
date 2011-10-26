@@ -47,7 +47,7 @@ function qbehaviour_opaque_hacks_filter_xhtml($xhtml, $opaquestate) {
     // button, with an id containing _omact_ and the following script tag.
     if ($opaquestate->resultssequencenumber >= 0 || $opaquestate->questionended) {
         $xhtml = preg_replace(
-                '|<input(?:(?!disabled=)[^>])*? id="[^"]*_omact_[^"]*"(?:(?!disabled=)[^>])*?>' .
+                '|<input(?:(?!disabled=)[^>])*? id="[^"]*%%omact_[^"]*"(?:(?!disabled=)[^>])*?>' .
                 '<script type="text/javascript">[^<]*</script>|', '', $xhtml);
     }
 

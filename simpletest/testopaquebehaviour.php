@@ -187,7 +187,8 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_mark(3);
         $this->check_current_output(
                 new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/correct/'));
+                new PatternExpectation('/correct/'),
+                new NoPatternExpectation('/_omact_next/'));
     }
 
     public function test_different_max() {
