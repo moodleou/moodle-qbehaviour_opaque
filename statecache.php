@@ -29,16 +29,22 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Caches opaque states in the session.
  *
+ * This is a singleton class, which is important, becuase we want one instance
+ * per requests that does things with Opaque questions. That is how we ensure
+ * we expire no longer required cache entries.
+ *
  * @copyright  2011 Antti Andreimann
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 class qbehaviour_opaque_state_cache {
+    const MAX_IDLE_LIFETIME = 2;
+
     /** @var array reference to where the data is acutally stored in the session. */
     protected $cache;
 
     /** @var qbehaviour_opaque_cache_manager singleton instance. */
-    protected static $manager;
+    protected static $instance = null;
 
     /**
      * Constructor.
@@ -52,6 +58,15 @@ class qbehaviour_opaque_state_cache {
         }
 
         $this->cache = &$SESSION->qtype_opaque_state_cache;
+
+        $this->age_all_entries();
+
+        // It would be better to do this at the end of the request, just before
+        // the session is written out, rather than the next time this class is
+        // created. However, I cannot currently find a way to hook into that
+        // moment. Neither a destructor for this class, nor register_shutdown_function
+        // works. They both happen after the session has been closed.
+        $this->discard_old_entries();
     }
 
     /**
@@ -61,11 +76,28 @@ class qbehaviour_opaque_state_cache {
      * @return qbehaviour_cache_manager the cache manager instance
      */
     public static function get() {
-        if (empty($class->manager)) {
-            $class->manager = new self();
+        if (is_null(self::$instance)) {
+            self::$instance = new self();
         }
 
-        return $class->manager;
+        return self::$instance;
+    }
+
+    /**
+     * Useful for debugging.
+     *
+     * For example add public function __destruct() { echo $this; } to this class
+     * to output the cache state on any page that uses this cache.
+     *
+     * @return string representation of the state of the cache.
+     */
+    public function __toString() {
+        $string = '';
+        foreach ($this->cache as $state) {
+            $string .= $state->cachekey . ' => [' . $state->questionsessionid . ', ' .
+                    $state->sequencenumber . ', ' . $state->age . "]\n";
+        }
+        return $string;
     }
 
     /**
@@ -76,7 +108,7 @@ class qbehaviour_opaque_state_cache {
      *      null if there was no usable cached state to return.
      */
     public function load($key) {
-        if (!isset($this->cache[$key])) {
+        if (!array_key_exists($key, $this->cache)) {
             return null;
         }
 
@@ -90,30 +122,65 @@ class qbehaviour_opaque_state_cache {
      * @param object $state the opaque state to save
      */
     public function save($key, $state) {
+        if (array_key_exists($key, $this->cache)) {
+            // If we already have some other state at this cache key, delete it.
+            $this->delete($this->cache[$key]);
+        }
+
+        $state->cachekey = $key;
+        $this->mark_fresh($state);
         $this->cache[$key] = $state;
     }
 
     /**
-     * Delete the cached state
+     * Delete the cached state, making sure that any remote session associated
+     * with it is closed.
      *
-     * @param string $key a unique key of the cached entry to delete
+     * @param object $state the state to remove.
      */
-    public function delete($key) {
-        unset($this->cache[$key]);
+    public function delete($state) {
+        // Try to stop any active question session.
+        if (!empty($state->questionsessionid) && !empty($state->engine)) {
+            try {
+                $connection = new qbehaviour_opaque_connection($state->engine);
+                $connection->stop($state->questionsessionid);
+                $state->questionsessionid = null;
+            } catch (SoapFault $e) {
+                // ... but ignore any errors when doing so.
+            }
+        }
+
+        // Remove from the cache, if it is there.
+        if (!empty($state->cachekey)) {
+            unset($this->cache[$state->cachekey]);
+        }
     }
 
     /**
-     * 
+     * Reset the age of a cached entry to 0.
+     * @param object $state a cache entry.
      */
-    public function discard_old() {
-        if (count($this->cache) <= 1) {
-            return;
-        }
+    public function mark_fresh($state) {
+        $state->timemodified = time();
+        $state->age          = 0;
+    }
 
-        $timenow = time();
-        foreach ($this->cache as $key => $state) {
-            if ($state->timemodified < $timenow - 10) {
-                unset($this->cache[$key]);
+    /**
+     * Increase the age of all cache entries by one.
+     */
+    protected function age_all_entries() {
+        foreach ($this->cache as $state) {
+            $state->age += 1;
+        }
+    }
+
+    /**
+     * Discard any entries whose age is greater than MAX_IDLE_LIFETIME.
+     */
+    protected function discard_old_entries() {
+        foreach ($this->cache as $state) {
+            if ($state->age >= self::MAX_IDLE_LIFETIME) {
+                $this->delete($state);
             }
         }
     }

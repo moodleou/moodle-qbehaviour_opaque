@@ -107,8 +107,14 @@ class qbehaviour_opaque_state {
             $this->invalidate();
             throw $sf;
         }
+    }
 
-        $this->statecache->discard_old();
+    /**
+     * Invalidate the cached state, cleaning up any related resources.
+     */
+    public function invalidate() {
+        $this->statecache->delete($this->state);
+        $this->state = null;
     }
 
     /**
@@ -130,7 +136,6 @@ class qbehaviour_opaque_state {
         $this->state->options       = $this->make_option_string($options);
         $this->state->randomseed    = $firststep->get_behaviour_var('_randomseed');
         $this->state->nameprefix    = $qa->get_field_prefix();
-        $this->state->cachekey      = $this->calculate_cache_key($question->id, $firststep);
         $this->state->engine        = qtype_opaque_engine_manager::get()->load($question->engineid);
 
         // Set up the fields where we will store data sent back by the remote engine.
@@ -143,12 +148,11 @@ class qbehaviour_opaque_state {
         $this->state->cssfilename           = null;
         $this->state->progressinfo          = null;
 
-        $this->state->timemodified = time();
-
         // Having reloaded the engine definition, we need to re-connect.
         $this->connection = null;
 
-        $this->statecache->save($this->state->cachekey, $this->state);
+        $this->statecache->save(
+                $this->calculate_cache_key($question->id, $firststep), $this->state);
         $this->statecache->set_last_used_options($options);
     }
 
@@ -191,7 +195,7 @@ class qbehaviour_opaque_state {
             }
         }
 
-        $this->state->timemodified = time();
+        $this->statecache->mark_fresh($this->state);
     }
 
     /**
@@ -218,13 +222,8 @@ class qbehaviour_opaque_state {
     public function process_next_step($step) {
         $resourcecache = $this->get_resource_cache();
 
-        try {
-            $processreturn = $this->get_connection()->process(
-                    $this->state->questionsessionid, self::submitted_data($step));
-        } catch (SoapFault $e) {
-            $this->invalidate();
-            throw $e;
-        }
+        $processreturn = $this->get_connection()->process(
+                $this->state->questionsessionid, self::submitted_data($step));
 
         if (!empty($processreturn->results)) {
             $this->state->results = $processreturn->results;
@@ -392,28 +391,6 @@ class qbehaviour_opaque_state {
                 $this->state->randomseed     == $firststep->get_behaviour_var('_randomseed') &&
                 $this->state->options        == $this->make_option_string($options) &&
                 $this->state->sequencenumber <= $targetseq;
-    }
-
-    /**
-     * Invalidate the cached state, cleaning up any related resources.
-     */
-    public function invalidate() {
-
-        // If there is some question session active, try to stop it ...
-        if (!empty($this->state->questionsessionid)) {
-            try {
-                $this->get_connection()->stop($this->state->questionsessionid);
-            } catch (SoapFault $e) {
-                // ... but ignore any errors when doing so.
-            }
-        }
-
-        // Remove from the cache, if it might be there.
-        if (!empty($this->state->cachekey)) {
-            $this->statecache->delete($this->state->cachekey);
-        }
-
-        $this->state = null;
     }
 
     /**
