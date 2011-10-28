@@ -54,11 +54,14 @@ class qbehaviour_opaque_renderer extends qbehaviour_renderer {
 
         if ($opaquestate->get_css_filename() &&
                 $resourcecache->file_in_cache($opaquestate->get_css_filename())) {
-            $javascript = html_writer::script('
-                    YUI().use("node", function(Y) {
-                        Y.one("head").append(Y.Node.create(\'<link type="text/css" rel="stylesheet" href="' .
-                                $resourcecache->file_url($opaquestate->get_css_filename()) . '" />\'));
-                    })');
+            $cssurl = $resourcecache->file_url($opaquestate->get_css_filename())->out(false);
+            $javascript = html_writer::script('(function() {
+                        var link = document.createElement("link");
+                        link.rel = "stylesheet";
+                        link.type = "text/css";
+                        link.href = "' . addslashes_js($cssurl) . '";
+                        document.getElementsByTagName("head")[0].appendChild(link);
+                    })()');
         }
 
         return html_writer::tag('div', $javascript . $opaquestate->get_xhtml(),
