@@ -172,7 +172,12 @@ class qbehaviour_opaque extends question_behaviour {
         $opaquestate = new qbehaviour_opaque_state($this->qa, $pendingstep);
 
         if ($opaquestate->get_results_sequence_number() != $this->qa->get_num_steps()) {
-            $pendingstep->set_state(question_state::$todo);
+            if ($opaquestate->get_progress_info() === 'Answer saved') {
+                $pendingstep->set_state(question_state::$complete);
+            } else {
+                $pendingstep->set_state(question_state::$todo);
+            }
+
             $pendingstep->set_behaviour_var('_statestring', $opaquestate->get_progress_info());
 
         } else {
