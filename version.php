@@ -17,20 +17,21 @@
 /**
  * Version information for the Opaque question behaviour.
  *
- * @package    qbehaviour
- * @subpackage opaque
+ * @package    qbehaviour_opaque
  * @copyright  2006 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component    = 'qbehaviour_opaque';
-$plugin->version      = 2011102500;
 
-$plugin->requires     = 2011051212;
+$plugin->version   = 2011102500;
+$plugin->requires  = 2011070100;
+$plugin->cron      = 0;
+$plugin->component = 'qbehaviour_opaque';
+$plugin->maturity  = MATURITY_STABLE;
+$plugin->release   = '2.0';
+
 $plugin->dependencies = array(
-    'qtype_opaque'    => 2011102500
+    'qtype_opaque' => 2011102500
 );
-
-$plugin->maturity     = MATURITY_BETA;

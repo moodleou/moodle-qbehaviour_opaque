@@ -9,8 +9,8 @@ University (http://www.open.ac.uk/) as part of the OpenMark project
 done by Tim Hunt.
 
 As well as OpenMark, this question type can also be used to connect to
-STACK (http://www.stack.bham.ac.uk/), ounit (http://code.google.com/p/ounit/)
-and possibly other question systems we don't know about.
+ounit (http://code.google.com/p/ounit/) and possibly other question systems we
+don't know about.
 
 
 Opaque has been available since Moodle 1.8, but this version is compatible with
