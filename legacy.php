@@ -51,6 +51,23 @@ function qbehaviour_opaque_hacks_filter_xhtml($xhtml, $opaquestate) {
                 '<script type="text/javascript">[^<]*</script>|', '', $xhtml);
     }
 
+    // Process the links to TinyMCE that OpenMark now requires.
+    if (strpos($xhtml, '%%TINYMCE%%') !== false) {
+        global $CFG;
+        require_once($CFG->libdir . '/editor/tinymce/lib.php');
+
+        $tinymce = new tinymce_texteditor();
+        $tinymceurl = new moodle_url('/lib/editor/tinymce/tiny_mce/' . $tinymce->version . '/tiny_mce_src.js');
+        $settingsurl = new moodle_url('/question/behaviour/opaque/tinymcesettings.php');
+
+        $replaces = array(
+            'src="%%TINYMCE%%/tiny_mce_src.js' => 'src="' . $tinymceurl->out(),
+            'src="%%TINYMCE%%/tiny_mce_settings.js' => 'src="' . $settingsurl->out(),
+        );
+
+        $xhtml = str_replace(array_keys($replaces), array_values($replaces), $xhtml);
+    }
+
     return $xhtml;
 }
 
