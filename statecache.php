@@ -72,7 +72,7 @@ class qbehaviour_opaque_state_cache {
     /**
      * Get the cache manager instance associated with the current
      * user session or create a new one if it does not exist.
-     * 
+     *
      * @return qbehaviour_cache_manager the cache manager instance
      */
     public static function get() {
@@ -193,6 +193,9 @@ class qbehaviour_opaque_state_cache {
         global $SESSION;
         if (is_null($options)) {
             return;
+        }
+        if (!isset($SESSION->qtype_opaque_option_cache)) {
+            $SESSION->qtype_opaque_option_cache = new stdClass();
         }
         $SESSION->qtype_opaque_option_cache->readonly = $options->readonly;
         $SESSION->qtype_opaque_option_cache->marks = $options->marks;

@@ -79,6 +79,9 @@ function qbehaviour_opaque_hacks_filter_xhtml($xhtml, $opaquestate) {
  * @return string class to add to the HTML.
  */
 function qbehaviour_opaque_legacy_browser_type() {
+    if (!array_key_exists('HTTP_USER_AGENT', $_SERVER)) {
+        return 'unknown';
+    }
     $useragent = $_SERVER['HTTP_USER_AGENT'];
 
     // Filter troublemakers

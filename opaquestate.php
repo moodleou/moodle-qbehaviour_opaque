@@ -121,7 +121,7 @@ class qbehaviour_opaque_state {
      * Create a new state and store it in cache.
      *
      * @param question_attempt $qa the question attempt to use
-     * @param question_attempt_step $firststep the first step, includes 
+     * @param question_attempt_step $firststep the first step, includes
      * @param question_display_options $options display options in use.
      * @return mixed a stdClass with attributes for holding the cached state
      */

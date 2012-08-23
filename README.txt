@@ -40,3 +40,12 @@ set up the URLs of the question engines you wish to use.
 
 https://github.com/timhunt/moodle-local_testopaqueqe can be used to test that
 Opaque is working.
+
+
+To be able to run the unit tests, you need to add
+define('QTYPE_OPAQUE_TEST_ENGINE_QE',      'http://example.com/om-qe/services/Om');
+define('QTYPE_OPAQUE_TEST_ENGINE_TN',      'http://example.com/openmark/!question');
+define('QTYPE_OPAQUE_TEST_ENGINE_PASSKEY', 'abc123');
+define('QTYPE_OPAQUE_TEST_ENGINE_TIMEOUT', '5');
+to your config.php file. Of these, only the first is required. The remaining
+ones are optional. Specify them if your set-up needs them.

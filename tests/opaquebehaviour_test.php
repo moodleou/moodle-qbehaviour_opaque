@@ -26,8 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
 require_once($CFG->dirroot . '/question/engine/lib.php');
-require_once($CFG->dirroot . '/question/engine/simpletest/helpers.php');
+require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
 require_once($CFG->dirroot . '/question/behaviour/opaque/behaviour.php');
 
 
@@ -38,37 +39,12 @@ require_once($CFG->dirroot . '/question/behaviour/opaque/behaviour.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
-    /**
-     * Makes an Opaque question that refers to one of the sample questions
-     * supplied by OpenMark.
-     * @return unknown_type
-     */
-    protected function make_standard_om_question() {
-        global $DB;
-
-        $engines = qtype_opaque_engine_manager::get()->choices();
-        $engineid = key($engines);
-        if (!$engineid) {
-            throw new coding_exception('Cannot test Opaque. No question engines configured.');
-        }
-
-        question_bank::load_question_definition_classes('opaque');
-        $q = new qtype_opaque_question();
-        test_question_maker::initialise_a_question($q);
-
-        $q->name = 'samples.mu120.module5.question01';
-        $q->qtype = question_bank::get_qtype('opaque');
-        $q->defaultmark = 3;
-
-        $q->engineid = $engineid;
-        $q->remoteid = 'samples.mu120.module5.question01';
-        $q->remoteversion = '1.0';
-
-        return $q;
-    }
 
     public function test_wrong_three_times() {
-        $q = $this->make_standard_om_question();
+        $q = test_question_maker::make_question('opaque', 'mu120_m5_q01');
+        if (is_null($q)) {
+            $this->markTestSkipped('Cannot test Opaque. No question engines configured.');
+        }
         $this->start_attempt_at_question($q, 'interactive');
         $qa = $this->quba->get_question_attempt($this->slot);
 
@@ -76,11 +52,11 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$todo);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/You have 3 tries/'),
+                new question_pattern_expectation('/Below is a plan of a proposed garden/'),
+                new question_pattern_expectation('/You have 3 tries/'),
                 $this->get_contains_button_expectation(
                         $qa->get_qt_field_name('omact_gen_14'), 'Check'));
-        $this->assertPattern('/^\s*Below is a plan of a proposed garden./',
+        $this->assertRegExp('/^\s*Below is a plan of a proposed garden./',
                 $qa->get_question_summary());
         $this->assertNull($qa->get_right_answer_summary());
 
@@ -92,9 +68,9 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$todo);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/incorrect/'),
-                new PatternExpectation('/' .
+                new question_pattern_expectation('/Below is a plan of a proposed garden/'),
+                new question_pattern_expectation('/incorrect/'),
+                new question_pattern_expectation('/' .
                         preg_quote(get_string('notcomplete', 'qbehaviour_opaque')) . '/'),
                 $this->get_contains_button_expectation(
                         $qa->get_qt_field_name('omact_ok'), 'Try again'));
@@ -106,7 +82,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$todo);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/You have 2 tries/'));
+                new question_pattern_expectation('/You have 2 tries/'));
 
         // Submit a wrong answer again.
         $this->process_submission(array('omval_response1' => 1, 'omval_response2' => 666,
@@ -116,9 +92,9 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$todo);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/still incorrect/'),
-                new PatternExpectation('/' .
+                new question_pattern_expectation('/Below is a plan of a proposed garden/'),
+                new question_pattern_expectation('/still incorrect/'),
+                new question_pattern_expectation('/' .
                         preg_quote(get_string('notcomplete', 'qbehaviour_opaque')) . '/'));
 
         // Try again.
@@ -128,7 +104,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$todo);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/This is your last try/'));
+                new question_pattern_expectation('/This is your last try/'));
 
         // Submit a wrong answer third time.
         $this->process_submission(array('omval_response1' => 1, 'omval_response2' => 666,
@@ -138,19 +114,22 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$gradedwrong);
         $this->check_current_mark(0);
         $this->check_current_output(
-                new PatternExpectation(
+                new question_pattern_expectation(
                         '/Please see MU120 Preparatory Resource Book B section 5.1/'),
-                new PatternExpectation('/still incorrect/'));
-        $this->assertTrue(preg_match(
+                new question_pattern_expectation('/still incorrect/'));
+        $this->assertEquals(1, preg_match(
                 '/What is \(X\*W\) (\d+\.\d+)\*(\d+), \(X\*L\)(\d+\.\d+)\*(\d+)\?/',
                 $qa->get_question_summary(), $matches));
         $this->assertNull($qa->get_right_answer_summary());
-        $this->assertPattern('/' . $matches[1]*$matches[2] . '.*, ' . $matches[3]*$matches[4] . '/',
+        $this->assertRegExp('/' . $matches[1]*$matches[2] . '.*, ' . $matches[3]*$matches[4] . '/',
                 $qa->get_response_summary());
     }
 
     public function test_right_first_time() {
-        $q = $this->make_standard_om_question();
+        $q = test_question_maker::make_question('opaque', 'mu120_m5_q01');
+        if (is_null($q)) {
+            $this->markTestSkipped('Cannot test Opaque. No question engines configured.');
+        }
         $this->start_attempt_at_question($q, 'interactive');
         $qa = $this->quba->get_question_attempt($this->slot);
 
@@ -173,8 +152,8 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$todo);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/You have 3 tries/'),
+                new question_pattern_expectation('/Below is a plan of a proposed garden/'),
+                new question_pattern_expectation('/You have 3 tries/'),
                 $this->get_contains_button_expectation(
                         $qa->get_qt_field_name('omact_gen_14'), 'Check'));
 
@@ -186,13 +165,16 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$gradedright);
         $this->check_current_mark(3);
         $this->check_current_output(
-                new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/correct/'),
-                new NoPatternExpectation('/_omact_next/'));
+                new question_pattern_expectation('/Below is a plan of a proposed garden/'),
+                new question_pattern_expectation('/correct/'),
+                new question_no_pattern_expectation('/_omact_next/'));
     }
 
     public function test_different_max() {
-        $q = $this->make_standard_om_question();
+        $q = test_question_maker::make_question('opaque', 'mu120_m5_q01');
+        if (is_null($q)) {
+            $this->markTestSkipped('Cannot test Opaque. No question engines configured.');
+        }
         $this->start_attempt_at_question($q, 'interactive', 6.0);
         $qa = $this->quba->get_question_attempt($this->slot);
 
@@ -215,8 +197,8 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$todo);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/You have 3 tries/'),
+                new question_pattern_expectation('/Below is a plan of a proposed garden/'),
+                new question_pattern_expectation('/You have 3 tries/'),
                 $this->get_contains_button_expectation(
                         $qa->get_qt_field_name('omact_gen_14'), 'Check'));
 
@@ -228,12 +210,15 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$gradedright);
         $this->check_current_mark(6);
         $this->check_current_output(
-                new PatternExpectation('/Below is a plan of a proposed garden/'),
-                new PatternExpectation('/correct/'));
+                new question_pattern_expectation('/Below is a plan of a proposed garden/'),
+                new question_pattern_expectation('/correct/'));
     }
 
     public function test_gave_up() {
-        $q = $this->make_standard_om_question();
+        $q = test_question_maker::make_question('opaque', 'mu120_m5_q01');
+        if (is_null($q)) {
+            $this->markTestSkipped('Cannot test Opaque. No question engines configured.');
+        }
         $this->start_attempt_at_question($q, 'interactive');
 
         $this->quba->finish_all_questions();
@@ -241,7 +226,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_state(question_state::$gaveup);
         $this->check_current_mark(null);
         $this->check_current_output(
-                new PatternExpectation('/' .
+                new question_pattern_expectation('/' .
                         preg_quote(get_string('notcompletedmessage', 'qbehaviour_opaque')) . '/'));
     }
 }
