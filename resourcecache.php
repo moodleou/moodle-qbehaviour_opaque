@@ -17,10 +17,9 @@
 /**
  * Defines the qbehaviour_opaque_resource_cache class.
  *
- * @package    qbehaviour
- * @subpackage opaque
- * @copyright  2006 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   qbehaviour_opaque
+ * @copyright 2006 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
@@ -33,8 +32,8 @@ defined('MOODLE_INTERNAL') || die();
  * There are synchronisation issues if two students are doing the same question
  * at the same time.
  *
- * @copyright  2010 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2010 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qbehaviour_opaque_resource_cache {
     /** Prefix used for CSS files. */
@@ -134,7 +133,7 @@ class qbehaviour_opaque_resource_cache {
         }
         $mimetype = $this->file_mime_type($filename);
 
-        // Handle If-Modified-Since
+        // Handle If-Modified-Since.
         $file = $this->file_path($filename);
         $filedate = filemtime($file);
         $ifmodifiedsince = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
@@ -145,12 +144,12 @@ class qbehaviour_opaque_resource_cache {
         }
         header('Last-Modified: '.gmdate('D, d M Y H:i:s', $filedate).' GMT');
 
-        // Type
+        // Type.
         header('Content-Type: ' . $mimetype);
         header('Content-Length: ' . filesize($file));
 
-        // Output file
-        session_get_instance()->write_close(); // unlock session during fileserving
+        // Output file.
+        session_get_instance()->write_close(); // Unlock session during fileserving.
         readfile($file);
     }
 

@@ -17,10 +17,9 @@
 /**
  * Defines the renderer for the Opaque behaviour.
  *
- * @package    qbehaviour
- * @subpackage opaque
- * @copyright  2010 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   qbehaviour_opaque
+ * @copyright 2010 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
@@ -31,8 +30,8 @@ defined('MOODLE_INTERNAL') || die();
  * Renderer for outputting parts of a question when the actual behaviour
  * used is not available.
  *
- * @copyright  2010 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2010 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qbehaviour_opaque_renderer extends qbehaviour_renderer {
 

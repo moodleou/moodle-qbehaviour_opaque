@@ -17,14 +17,13 @@
 /**
  * Defines the qbehaviour_opaque_state_cache class.
  *
- * @package    qbehaviour
- * @subpackage opaque
- * @copyright  2011 Antti Andreimann
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   qbehaviour_opaque
+ * @copyright 2011 Antti Andreimann
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 defined('MOODLE_INTERNAL') || die();
+
 
 /**
  * Caches opaque states in the session.
@@ -33,10 +32,9 @@ defined('MOODLE_INTERNAL') || die();
  * per requests that does things with Opaque questions. That is how we ensure
  * we expire no longer required cache entries.
  *
- * @copyright  2011 Antti Andreimann
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2011 Antti Andreimann
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class qbehaviour_opaque_state_cache {
     const MAX_IDLE_LIFETIME = 2;
 

@@ -17,10 +17,9 @@
 /**
  * This file contains tests for the Opaque behaviour.
  *
- * @package    qbehaviour
- * @subpackage opaque
- * @copyright  2010 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   qbehaviour_opaque
+ * @copyright 2010 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
@@ -35,8 +34,9 @@ require_once($CFG->dirroot . '/question/behaviour/opaque/behaviour.php');
 /**
  * Unit tests for the Opaque behaviour.
  *
- * @copyright  2010 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2010 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @group qbehaviour_opaque
  */
 class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
 

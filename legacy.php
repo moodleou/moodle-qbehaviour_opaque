@@ -17,10 +17,9 @@
 /**
  * Defines functions that are used to apply historic hacks
  *
- * @package    qbehaviour
- * @subpackage opaque
- * @copyright  2006 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   qbehaviour_opaque
+ * @copyright 2006 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
@@ -84,7 +83,7 @@ function qbehaviour_opaque_legacy_browser_type() {
     }
     $useragent = $_SERVER['HTTP_USER_AGENT'];
 
-    // Filter troublemakers
+    // Filter troublemakers.
     if (strpos($useragent, 'KHTML') !== false) {
         return "khtml";
     }
@@ -92,13 +91,13 @@ function qbehaviour_opaque_legacy_browser_type() {
         return "opera";
     }
 
-    // Check version of our two supported browsers
+    // Check version of our two supported browsers.
     $matches = array();
     if (preg_match('/"^.*rv:(\d+)\\.(\d+)\D.*$"/', $useragent, $matches)) {
         return 'gecko-' . $matches[1] . '-' . $matches[2];
     }
     if (preg_match('/^.*MSIE (\d+)\\.(\d+)\D.*Windows.*$/', $useragent, $matches)) {
-        return 'winie-' . $matches[1]; // Major verison only
+        return 'winie-' . $matches[1]; // Major verison only.
     }
 
     return '';

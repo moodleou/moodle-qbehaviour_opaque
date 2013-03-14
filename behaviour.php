@@ -18,10 +18,9 @@
  * This behaviour that is used when the actual qim was not
  * available.
  *
- * @package    qbehaviour
- * @subpackage opaque
- * @copyright  2010 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   qbehaviour_opaque
+ * @copyright 2010 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
@@ -38,8 +37,8 @@ require_once($CFG->dirroot . '/question/behaviour/opaque/opaquestate.php');
 /**
  * This behaviour is specifically for use with the Opaque question type.
  *
- * @copyright  2010 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2010 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qbehaviour_opaque extends question_behaviour {
     /** @var string */

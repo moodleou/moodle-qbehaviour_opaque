@@ -17,10 +17,9 @@
 /**
  * Defines the qbehaviour_opaque_connection class.
  *
- * @package    qbehaviour
- * @subpackage opaque
- * @copyright  2011 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   qbehaviour_opaque
+ * @copyright 2011 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
@@ -35,8 +34,8 @@ defined('MOODLE_INTERNAL') || die();
  * Wraps the SOAP connection to the question engine, exposing the methods used
  * when processing question attempts.
  *
- * @copyright  2011 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2011 The Open University
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qbehaviour_opaque_connection extends qtype_opaque_connection {
 
