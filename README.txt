@@ -14,21 +14,20 @@ don't know about.
 
 
 Opaque has been available since Moodle 1.8, but this version is compatible with
-Moodle 2.1+. (For older versions, see
-http://cvs.moodle.org/contrib/plugins/question/type/opaque/.)
+Moodle 2.3+.
 
 This question behaviour also requires the Opaque question type to be installed.
 
 To install using git, type this command in the root of your Moodle install
-    git clone git://github.com/timhunt/moodle-qtype_opaque.git question/type/opaque
-    git clone git://github.com/timhunt/moodle-qbehaviour_opaque.git question/behaviour/opaque
+    git clone git://github.com/moodleou/moodle-qtype_opaque.git question/type/opaque
+    git clone git://github.com/moodleou/moodle-qbehaviour_opaque.git question/behaviour/opaque
 Then add question/type/opaque and question/behaviour/opaque to your git ignore.
 
 Alternatively, download the zip from
-    https://github.com/timhunt/moodle-qtype_opaque/zipball/master
+    https://github.com/moodleou/moodle-qtype_opaque/zipball/master
 unzip it into the question/type folder, and then rename the new
 folder to opaque. Then download the zip
-    https://github.com/timhunt/moodle-qbehaviour_opaque/zipball/master
+    https://github.com/moodleou/moodle-qbehaviour_opaque/zipball/master
 unzip it into the question/behaviour folder, and then rename the new
 folder to opaque.
 
@@ -38,7 +37,7 @@ Once installed you need to go to the question type settings page
 set up the URLs of the question engines you wish to use.
 
 
-https://github.com/timhunt/moodle-local_testopaqueqe can be used to test that
+https://github.com/moodleou/moodle-local_testopaqueqe can be used to test that
 Opaque is working.
 
 
