@@ -180,7 +180,9 @@ class qbehaviour_opaque_state {
 
         // Now play back the user input
         while ($this->state->sequencenumber < $targetseq) {
-            set_time_limit($this->state->engine->timeout + 30); // Prevent PHP time-outs.
+            if (!CLI_SCRIPT) {
+                set_time_limit($this->state->engine->timeout + 30); // Prevent PHP time-outs.
+            }
             // For slower engines and longer sequences, it is concievable that we
             // could hit the browser connection timeout. However, it is not acceptable
             // to do any output here, so there is noting we can do about that.
