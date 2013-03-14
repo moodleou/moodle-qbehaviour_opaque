@@ -103,13 +103,16 @@ class qbehaviour_opaque extends question_behaviour {
 
     protected function is_same_response(question_attempt_step $pendingstep) {
         $newdata = $pendingstep->get_submitted_data();
+        $newdata = qbehaviour_opaque_fix_up_submitted_data($newdata, $pendingstep);
 
         // If an omact_ button has been clicked, never treat this as a duplicate submission.
         if (qbehaviour_opaque_response_contains_om_action($newdata)) {
             return false;
         }
 
-        $olddata = $this->qa->get_last_step()->get_submitted_data();
+        $laststep = $this->qa->get_last_step();
+        $olddata = $laststep->get_submitted_data();
+        $olddata = qbehaviour_opaque_fix_up_submitted_data($olddata, $laststep);
         return question_utils::arrays_have_same_keys_and_values($newdata, $olddata);
     }
 
