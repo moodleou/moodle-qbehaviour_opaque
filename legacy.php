@@ -120,8 +120,8 @@ function qbehaviour_opaque_hacks_filter_response($response, $opaquestate) {
         foreach ($response->resources as $key => $resource) {
             if ($resource->filename == 'script.js') {
                 $response->resources[$key]->content = preg_replace(
-                        '/(?<=' . preg_quote('window.open("", idprefix') . '|' .
-                                preg_quote('window.open("",idprefix') . ')\+(?=\"\w+\"\+id,)/',
+                        '/(?<=' . preg_quote('window.open("", idprefix', '/') . '|' .
+                                preg_quote('window.open("",idprefix', '/') . ')\+(?=\"\w+\"\+id,)/',
                         '.replace(/\W/g,"_")+', $resource->content);
             }
         }
