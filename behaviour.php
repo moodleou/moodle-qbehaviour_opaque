@@ -51,8 +51,8 @@ class qbehaviour_opaque extends question_behaviour {
         $this->preferredbehaviour = $preferredbehaviour;
     }
 
-    public function required_question_definition_type() {
-        return 'qtype_opaque_question';
+    public function is_compatible_question(question_definition $question) {
+        return $question instanceof qtype_opaque_question;
     }
 
     public function get_state_string($showcorrectness) {
