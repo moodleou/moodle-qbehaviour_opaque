@@ -34,6 +34,7 @@ $type = min_optional_param('t', 'sub,sup', 'RAW');
 $elements = min_optional_param('e', 60, 'RAW');
 $isenabled = min_optional_param('ro', 60, 'RAW');
 $editorselector = min_optional_param('es', 60, 'SAFEDIR');
+$zoom = min_optional_param('z', '', 'INT');
 
 if ($isenabled === 'true') {
     $readonly = 'readonly: false';
@@ -60,6 +61,10 @@ switch ($type) {
         throw new coding_exception('Unknow editor type ' . $type);
 }
 
+if (!$zoom) {
+    $zoom = '';
+}
+
 ?>
 tinymce.PluginManager.load('supsub', '<?php echo $CFG->wwwroot; ?>/lib/editor/supsub/supsub_plugin.js');
 
@@ -67,7 +72,7 @@ tinyMCE.init({
     // General options
     apply_source_formatting: true,
     content_css: "<?php echo $CFG->wwwroot; ?>/lib/editor/supsub/extra.css,<?php
-            echo $CFG->wwwroot; ?>/question/behaviour/opaque/tinymce.css",
+            echo $CFG->wwwroot; ?>/question/behaviour/opaque/tinymce<?php echo $zoom; ?>.css",
     directionality: "ltr",
     document_base_url: "<?php echo $CFG->wwwroot . '/'; ?>",
     editor_selector: "<?php echo $editorselector; ?>",
