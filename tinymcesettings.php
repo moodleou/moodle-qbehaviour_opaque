@@ -76,6 +76,7 @@ tinyMCE.init({
     force_br_newlines: true,
     force_p_newlines: false,
     height: <?php echo $height; ?>,
+    min_height: 10,
     language: "en",
     mode: "textareas",
     nowrap: true,
