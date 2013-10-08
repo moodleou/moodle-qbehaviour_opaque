@@ -30,7 +30,7 @@ require(dirname(__FILE__) . '/../../../config.php');
 
 $height = min_optional_param('h', 100, 'INT');
 $width = min_optional_param('w', 100, 'INT');
-$type = min_optional_param('t', 'sup,sub', 'RAW');
+$type = min_optional_param('t', 'sub,sup', 'RAW');
 $elements = min_optional_param('e', 60, 'RAW');
 $isenabled = min_optional_param('ro', 60, 'RAW');
 $editorselector = min_optional_param('es', 60, 'SAFEDIR');
@@ -52,8 +52,9 @@ switch ($type) {
         $validelements = '-sub';
         break;
 
-    case 'sup,sub':
+    case 'sub,sup':
         $validelements = '-sup,-sub';
+        break;
 
     default:
         throw new coding_exception('Unknow editor type ' . $type);
