@@ -431,7 +431,7 @@ class qbehaviour_opaque_state {
 
         // Save the progress info.
         if (isset($response->progressInfo)) {
-            $this->state->progressinfo = $response->progressInfo;
+            $this->state->progressinfo = str_replace(array_keys($replaces), $replaces, $response->progressInfo);
         }
 
         return true;
@@ -454,7 +454,8 @@ class qbehaviour_opaque_state {
             '%%%%'          => '%%'
         );
 
-        $strings = array('lTRYAGAIN', 'lGIVEUP', 'lNEXTQUESTION', 'lENTERANSWER', 'lCLEAR');
+        $strings = array('lTRYAGAIN', 'lGIVEUP', 'lNEXTQUESTION', 'lENTERANSWER',
+                'lCLEAR', 'lTRY', 'lTRIES');
         foreach ($strings as $string) {
             $this->replaces["%%$string%%"] = get_string($string, 'qbehaviour_opaque');
         }

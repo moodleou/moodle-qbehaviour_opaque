@@ -23,11 +23,13 @@
  */
 
 $string['errorconnecting'] = 'Error connecting to the remote question engine.';
-$string['lTRYAGAIN'] = 'Try again';
+$string['lCLEAR'] = 'Clear';
+$string['lENTERANSWER'] = 'Check';
 $string['lGIVEUP'] = 'Pass';
 $string['lNEXTQUESTION'] = 'Next';
-$string['lENTERANSWER'] = 'Check';
-$string['lCLEAR'] = 'Clear';
+$string['lTRIES'] = 'tries';
+$string['lTRY'] = 'try';
+$string['lTRYAGAIN'] = 'Try again';
 $string['notcomplete'] = 'Not complete';
 $string['notcompletedmessage'] = 'You did not complete this question during the attempt. No review is possible.';
 $string['pluginname'] = 'Question managed by a remote engine';
