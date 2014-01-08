@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This behaviour that is used when the actual qim was not
- * available.
+ * This behaviour specifically for use with the Opaque question type.
  *
  * @package   qbehaviour_opaque
  * @copyright 2010 The Open University
