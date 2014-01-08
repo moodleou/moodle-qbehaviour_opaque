@@ -431,6 +431,7 @@ class qbehaviour_opaque_state {
 
         // Save the progress info.
         if (isset($response->progressInfo)) {
+            $replaces = $this->get_replaces();
             $this->state->progressinfo = str_replace(array_keys($replaces), $replaces, $response->progressInfo);
         }
 
