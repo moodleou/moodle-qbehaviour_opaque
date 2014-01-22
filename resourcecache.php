@@ -149,7 +149,7 @@ class qbehaviour_opaque_resource_cache {
         header('Content-Length: ' . filesize($file));
 
         // Output file.
-        session_get_instance()->write_close(); // Unlock session during fileserving.
+        \core\session\manager::write_close(); // Unlock session during fileserving.
         readfile($file);
     }
 
