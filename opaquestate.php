@@ -252,9 +252,14 @@ class qbehaviour_opaque_state {
      *
      */
     protected function calculate_cache_key($questionid, $firststep) {
+        if ($firststep->has_behaviour_var('_attempt')) {
+            $attempt = $firststep->get_behaviour_var('_attempt');
+        } else {
+            $attempt = $firststep->get_behaviour_var('_randomseed');
+        }
         return md5(implode('|', array(
             $questionid,
-            $firststep->get_behaviour_var('_randomseed'),
+            $attempt,
             $firststep->get_behaviour_var('_userid'),
             $firststep->get_behaviour_var('_language'),
             $firststep->get_behaviour_var('_preferredbehaviour'),

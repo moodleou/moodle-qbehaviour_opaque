@@ -74,9 +74,11 @@ class qbehaviour_opaque extends question_behaviour {
 
         parent::init_first_step($step, $variant);
 
-        // Set up the random seed to be the current time in milliseconds.
-        list($micros, $sec) = explode(' ', microtime());
-        $step->set_behaviour_var('_randomseed', $sec . floor($micros * 1000));
+        // We no longer set the random seed as such (we pass a fixed conventional
+        // value instead). Instead we pass the variant as OpenMark's 'attempt'
+        // paramter.
+        $step->set_behaviour_var('_randomseed', 123456789);
+        $step->set_behaviour_var('_attempt', $variant);
         $step->set_behaviour_var('_userid', $USER->id);
         $step->set_behaviour_var('_language', current_language());
         $step->set_behaviour_var('_preferredbehaviour', $this->preferredbehaviour);
@@ -117,23 +119,26 @@ class qbehaviour_opaque extends question_behaviour {
     }
 
     public function summarise_action(question_attempt_step $step) {
+        if ($step->has_behaviour_var('_randomseed')) {
+            return $this->summarise_start($step);
 
-        if ($step->has_behaviour_var('finish')) {
+        } else if ($step->has_behaviour_var('finish')) {
             return $this->summarise_finish($step);
 
         } else if ($step->has_behaviour_var('comment')) {
             return $this->summarise_manual_comment($step);
 
+        } else if ($step->has_qt_var('omact_ok')) {
+            // This is always a 'Try again' event in OpenMark. In this case we
+            // use button label.
+            return $step->get_qt_var('omact_ok');
+
         } else {
-            $data = qbehaviour_opaque_state::submitted_data($step);
-            $formatteddata = array();
-            foreach ($data as $name => $value) {
-                $formatteddata[] = $name . ' => ' . s($value);
-            }
-            if ($formatteddata) {
-                return get_string('submitted', 'question', implode(', ', $formatteddata));
+            $summary = $this->question->summarise_response(qbehaviour_opaque_state::submitted_data($step));
+            if ($this->step_has_a_submitted_response($step)) {
+                return get_string('submitted', 'question', $summary);
             } else {
-                return $this->summarise_start($step);
+                return get_string('saved', 'question', $summary);
             }
         }
     }
@@ -203,6 +208,12 @@ class qbehaviour_opaque extends question_behaviour {
             if (!empty($results->questionLine)) {
                 $this->qa->set_question_summary(
                         $this->cleanup_results($results->questionLine));
+
+                if (preg_match('~variant\s*=\s*(\d+)~i', $results->questionLine, $matches)) {
+                    $pendingstep->set_new_variant_number($matches[1]);
+                } else {
+                    $pendingstep->set_new_variant_number(1);
+                }
             }
             if (!empty($results->answerLine)) {
                 $pendingstep->set_new_response_summary(
@@ -219,5 +230,27 @@ class qbehaviour_opaque extends question_behaviour {
 
     protected function cleanup_results($line) {
         return preg_replace('/\\s+/', ' ', $line);
+    }
+
+    public function step_has_a_submitted_response($step) {
+        if ($step->has_behaviour_var('finish')) {
+            return false;
+
+        } else if ($step->has_behaviour_var('comment')) {
+            return false;
+
+        } else {
+            $foundomact = false;
+            foreach (qbehaviour_opaque_state::submitted_data($step) as $name => $value) {
+                if ($name === 'omact_ok') {
+                    // This is a Try again state.
+                    return false;
+                }
+                if (substr($name, 0, 6) === 'omact_') {
+                    $foundomact = true;
+                }
+            }
+            return $foundomact;
+        }
     }
 }

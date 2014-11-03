@@ -29,6 +29,7 @@ global $CFG;
 require_once($CFG->dirroot . '/question/engine/lib.php');
 require_once($CFG->dirroot . '/question/engine/tests/helpers.php');
 require_once($CFG->dirroot . '/question/behaviour/opaque/behaviour.php');
+require_once($CFG->dirroot . '/question/type/opaque/tests/test_engine_configuration.php');
 
 
 /**
@@ -39,6 +40,14 @@ require_once($CFG->dirroot . '/question/behaviour/opaque/behaviour.php');
  * @group qbehaviour_opaque
  */
 class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
+    public function setUp() {
+        parent::setUp();
+        if (!qtype_opaque_test_config::is_test_config_available()) {
+            $this->markTestSkipped(
+                    'To run this Opaque unit test, you must set up a test engine ' .
+                    'configuration in your config.php file.');
+        }
+    }
 
     public function test_wrong_three_times() {
         $q = test_question_maker::make_question('opaque', 'mu120_m5_q01');
@@ -106,6 +115,15 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
         $this->check_current_output(
                 new question_pattern_expectation('/This is your last try/'));
 
+        // Save a response without submitting.
+        $this->process_submission(array('omval_response1' => 1, 'omval_response2' => 666));
+
+        // Verify.
+        $this->check_current_state(question_state::$todo);
+        $this->check_current_mark(null);
+        $this->check_current_output(
+                new question_pattern_expectation('/This is your last try/'));
+
         // Submit a wrong answer third time.
         $this->process_submission(array('omval_response1' => 1, 'omval_response2' => 666,
                 'omact_gen_14' => 'Check'));
@@ -121,7 +139,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
                 '/What is \(X\*W\) (\d+\.\d+)\*(\d+), \(X\*L\)(\d+\.\d+)\*(\d+)\?/',
                 $qa->get_question_summary(), $matches));
         $this->assertNull($qa->get_right_answer_summary());
-        $this->assertRegExp('/' . $matches[1]*$matches[2] . '.*, ' . $matches[3]*$matches[4] . '/',
+        $this->assertRegExp('/1\.0 +666\.0/',
                 $qa->get_response_summary());
     }
 

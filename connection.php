@@ -66,6 +66,11 @@ class qbehaviour_opaque_connection extends qtype_opaque_connection {
             'preferredbehaviour' => $data['-_preferredbehaviour'],
         );
 
+        if (array_key_exists('-_attempt', $data)) {
+            $initialparams['attempt'] = $data['-_attempt'];
+            $initialparams['navigatorVersion'] = '1.9.9';
+        }
+
         if (!is_null($options)) {
             $initialparams['display_readonly'] = (int) $options->readonly;
             $initialparams['display_marks'] = (int) $options->marks;
