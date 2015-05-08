@@ -34,3 +34,5 @@ $plugin->release   = '2.6 For Moodle 2.7+';
 $plugin->dependencies = array(
     'qtype_opaque' => 2014111200,
 );
+
+$plugin->outestssufficient = true;
