@@ -33,4 +33,7 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qbehaviour_opaque_type extends question_behaviour_type {
+    public function can_questions_finish_during_the_attempt() {
+        return true;
+    }
 }
