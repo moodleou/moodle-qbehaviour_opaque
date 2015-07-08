@@ -54,10 +54,6 @@ class qbehaviour_opaque extends question_behaviour {
         return $question instanceof qtype_opaque_question;
     }
 
-    public function can_finish_during_attempt() {
-        return true;
-    }
-
     public function get_state_string($showcorrectness) {
         $state = $this->qa->get_state();
         $omstate = $this->qa->get_last_behaviour_var('_statestring');

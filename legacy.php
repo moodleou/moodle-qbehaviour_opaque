@@ -67,6 +67,18 @@ function qbehaviour_opaque_hacks_filter_xhtml($xhtml, $opaquestate) {
         $xhtml = str_replace(array_keys($replaces), array_values($replaces), $xhtml);
     }
 
+    // Also handle links to JSME. I have just implemented a simple solution for now.
+    // Later we might want a more generic mechanism to handle TinyMCE and this,
+    // and to make it all configurable. But until we need it there is no point coding it.
+    // Also, we intentionally do not check if qtype_pmatchjme is installed. If it is,
+    // this will work. If not, not.
+    $jsmerooturl = new moodle_url('/question/type/pmatchjme/jsme');
+    $xhtml = str_replace('%%SHAREDRESOURCE:JSME%%', $jsmerooturl->out(), $xhtml);
+
+    // Ditto OU sup-sub stand-alone version.
+    $ousupsuburl = new moodle_url('/lib/editor/ousupsub/standalone/ousupsub');
+    $xhtml = str_replace('%%SHAREDRESOURCE:SUPSUB%%', $ousupsuburl->out(), $xhtml);
+
     return $xhtml;
 }
 
