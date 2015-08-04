@@ -60,8 +60,8 @@ function qbehaviour_opaque_hacks_filter_xhtml($xhtml, $opaquestate) {
         $settingsurl = new moodle_url('/question/behaviour/opaque/tinymcesettings.php');
 
         $replaces = array(
-            'src="%%TINYMCE%%/tiny_mce_src.js' => 'src="' . $tinymceurl->out(),
-            'src="%%TINYMCE%%/tiny_mce_settings.js' => 'src="' . $settingsurl->out(),
+            '%%TINYMCE%%/tiny_mce_src.js' => $tinymceurl->out(),
+            '%%TINYMCE%%/tiny_mce_settings.js' => $settingsurl->out(),
         );
 
         $xhtml = str_replace(array_keys($replaces), array_values($replaces), $xhtml);
