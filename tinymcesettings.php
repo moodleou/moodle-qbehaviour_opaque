@@ -66,13 +66,12 @@ if (!$zoom) {
 }
 
 ?>
-tinymce.PluginManager.load('supsub', '<?php echo $CFG->wwwroot; ?>/lib/editor/supsub/supsub_plugin.js');
+tinymce.PluginManager.load('supsub', '<?php echo $CFG->wwwroot; ?>/question/behaviour/opaque/tinymce_supsub_plugin.js');
 
 tinyMCE.init({
     // General options
     apply_source_formatting: true,
-    content_css: "<?php echo $CFG->wwwroot; ?>/lib/editor/supsub/extra.css,<?php
-            echo $CFG->wwwroot; ?>/question/behaviour/opaque/tinymce<?php echo $zoom; ?>.css",
+    content_css: "<?php echo $CFG->wwwroot; ?>/question/behaviour/opaque/tinymce<?php echo $zoom; ?>.css",
     directionality: "ltr",
     document_base_url: "<?php echo $CFG->wwwroot . '/'; ?>",
     editor_selector: "<?php echo $editorselector; ?>",

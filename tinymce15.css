@@ -1,2 +1,2 @@
-/* This is needed in addition to lib/editor/supsub/extra.css. */
 body {font:19.5px/1.231 arial,helvetica,clean,sans-serif;}
+body#tinymce {margin: 0;padding: 1px 0 0 3px;line-height: 2;}
