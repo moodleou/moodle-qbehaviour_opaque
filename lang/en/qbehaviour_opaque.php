@@ -36,3 +36,4 @@ $string['pluginname'] = 'Question managed by a remote engine';
 $string['soapfault'] = 'Technical details:
 Fault code: {$a->faultcode}
 Fault string: {$a->faultstring}';
+$string['privacy:metadata'] = 'The Question managed by a remote engine plugin does not store any personal data.';
