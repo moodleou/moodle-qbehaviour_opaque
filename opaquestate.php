@@ -391,11 +391,11 @@ class qbehaviour_opaque_state {
         $question = $qa->get_question();
 
         return !empty($this->state) &&
-                $this->state->engineid       == $question->engineid &&
-                $this->state->remoteid       == $question->remoteid &&
-                $this->state->remoteversion  == $question->remoteversion &&
-                $this->state->randomseed     == $firststep->get_behaviour_var('_randomseed') &&
-                $this->state->options        == $this->make_option_string($options) &&
+                $this->state->engineid == $question->engineid &&
+                $this->state->remoteid == $question->remoteid &&
+                $this->state->remoteversion == $question->remoteversion &&
+                $this->state->randomseed == $firststep->get_behaviour_var('_randomseed') &&
+                $this->state->options == $this->make_option_string($options) &&
                 $this->state->sequencenumber <= $targetseq;
     }
 

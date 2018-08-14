@@ -38,8 +38,9 @@ function qbehaviour_opaque_hacks_filter_xhtml($xhtml, $opaquestate) {
     // so they don't contain &s.
     $xhtml = preg_replace_callback(
             '/name="FlashVars" value="TheSound=[^"]+"/',
-            create_function('$matches', 'return str_replace("&amp;", "%26", $matches[0]);'),
-            $xhtml);
+            function ($matches) {
+                return str_replace("&amp;", "%26", $matches[0]);
+            }, $xhtml);
 
     // Another hack to take out the next button that most OM questions include,
     // but which does not work in Moodle. Actually, we remove any non-disabled

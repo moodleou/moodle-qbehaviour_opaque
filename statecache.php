@@ -143,7 +143,7 @@ class qbehaviour_opaque_state_cache {
                 $connection = new qbehaviour_opaque_connection($state->engine);
                 $connection->stop($state->questionsessionid);
                 $state->questionsessionid = null;
-            } catch (SoapFault $e) {
+            } catch (SoapFault $e) { // @codingStandardsIgnoreLine
                 // ... but ignore any errors when doing so.
             }
         }
