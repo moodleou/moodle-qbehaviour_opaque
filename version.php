@@ -24,15 +24,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2015051000;
-$plugin->requires  = 2014041100;
-$plugin->cron      = 0;
+$plugin->version   = 2018081400;
+$plugin->requires  = 2017111300;
 $plugin->component = 'qbehaviour_opaque';
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '2.7 For Moodle 2.7+';
+$plugin->release   = '2.8 For Moodle 3.4+';
 
 $plugin->dependencies = array(
-    'qtype_opaque' => 2014111200,
+    'qtype_opaque' => 2018081400,
 );
 
 $plugin->outestssufficient = true;
