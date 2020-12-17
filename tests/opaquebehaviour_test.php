@@ -40,7 +40,7 @@ require_once($CFG->dirroot . '/question/type/opaque/tests/test_engine_configurat
  * @group qbehaviour_opaque
  */
 class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
-    public function setUp() {
+    public function setUp(): void {
         parent::setUp();
         if (!qtype_opaque_test_config::is_test_config_available()) {
             $this->markTestSkipped(
