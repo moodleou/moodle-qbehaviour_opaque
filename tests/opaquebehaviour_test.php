@@ -65,7 +65,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
                 new question_pattern_expectation('/You have 3 tries/'),
                 $this->get_contains_button_expectation(
                         $qa->get_qt_field_name('omact_gen_14'), 'Check'));
-        $this->assertRegExp('/^\s*Below is a plan of a proposed garden./',
+        $this->assertMatchesRegularExpression('/^\s*Below is a plan of a proposed garden./',
                 $qa->get_question_summary());
         $this->assertNull($qa->get_right_answer_summary());
 
@@ -139,7 +139,7 @@ class qbehaviour_opaque_test extends qbehaviour_walkthrough_test_base {
                 '/What is \(X\*W\) (\d+\.\d+)\*(\d+), \(X\*L\)(\d+\.\d+)\*(\d+)\?/',
                 $qa->get_question_summary(), $matches));
         $this->assertNull($qa->get_right_answer_summary());
-        $this->assertRegExp('/1\.0 +666\.0/',
+        $this->assertMatchesRegularExpression('/1\.0 +666\.0/',
                 $qa->get_response_summary());
     }
 
