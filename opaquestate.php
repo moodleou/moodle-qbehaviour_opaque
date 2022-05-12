@@ -164,13 +164,13 @@ class qbehaviour_opaque_state {
      * history played back.
      *
      * @param question_attempt $qa the question attempt to use
-     * @param question_attempt_step $pendingstep (optional) if we are in
+     * @param question_attempt_step|null $pendingstep (optional) if we are in
      *      the process of adding a new step to the end of the question_attempt,
      *      this is it.
      * @param question_display_options $options (optional) display options to
      *      pass on to the question engine
      */
-    public function update($qa, $pendingstep = null, $targetseq, $options = null) {
+    public function update($qa, $pendingstep, $targetseq, $options = null) {
         // If this state has never been started, start it now.
         if ($this->state->sequencenumber < 0) {
             $firststep = $this->find_step(0, $qa, $pendingstep);
