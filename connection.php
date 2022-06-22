@@ -22,10 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-defined('MOODLE_INTERNAL') || die();
-
-
 // In config.php, you can set
 // $CFG->qtype_opaque_soap_class = 'qtype_opaque_soap_client_with_logging';
 // To log every SOAP call in huge detail. Lots are writted to moodledata/temp.
