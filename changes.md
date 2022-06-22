@@ -1,6 +1,11 @@
 # Change log for the The Opaque question behaviour
 
 
+## Changes in 2.9
+
+* This version works with Moodle 4.0.
+
+
 ## Changes in 2.8
 
 * Privacy API implementation.

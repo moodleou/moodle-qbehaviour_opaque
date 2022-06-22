@@ -22,9 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Hacks used to clean-up the HTML.
  * @param string $xhtml the HTML that came from the question engine.

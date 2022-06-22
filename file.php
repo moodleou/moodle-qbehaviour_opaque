@@ -32,7 +32,7 @@ list($engineid, $remoteid, $remoteversion, $filename) = explode('/', trim($path,
 // The Open University found it necessary to comment out the whole of the following if statement
 // to make things work reliably. However, I think that was only problems with synchronising
 // the session between our load-balanced servers, and I think it is better to leave
-// this code in. (OU bug 7991.)
+// this code in (OU bug 7991.).
 
 // Actually, this seems to be unrelated to load-balancers, and it is happening
 // again. There is some horrible race-condition here that I can't work out, so
